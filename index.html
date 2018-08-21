@@ -72,35 +72,42 @@
   
     <article id="post-课题日志/日志2018-8-20/日志2018-8-20" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/21/课题日志/日志2018-8-20/日志2018-8-20/" class="article-date">
-  <time datetime="2018-08-21T05:33:03.570Z" itemprop="datePublished">2018-08-21</time>
+    <a href="/2018/08/20/课题日志/日志2018-8-20/日志2018-8-20/" class="article-date">
+  <time datetime="2018-08-20T05:41:26.000Z" itemprop="datePublished">2018-08-20</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/20/课题日志/日志2018-8-20/日志2018-8-20/">课题日志</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>日期：2018/8/20  </p>
-<hr>
-<h1 id="课题日志1"><a href="#课题日志1" class="headerlink" title="课题日志1"></a>课题日志1</h1><hr>
-<hr>
-<h2 id="ERROR："><a href="#ERROR：" class="headerlink" title="ERROR："></a>ERROR：</h2><hr>
-<h2 id="ERROR-1"><a href="#ERROR-1" class="headerlink" title="ERROR 1"></a>ERROR 1</h2><p><img src="\bug1.png" alt="bug1">  </p>
+        <hr>
+<h1 id="ERROR："><a href="#ERROR：" class="headerlink" title="ERROR："></a>ERROR：</h1><hr>
+<h2 id="ERROR-1"><a href="#ERROR-1" class="headerlink" title="ERROR 1"></a>ERROR 1</h2><p><img src="\img\bug1.png" alt="bug1">  </p>
 <h3 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h3><p align="justify">发现是数据格式不一致造成冲突，临时解决办法，将下图中的tf.float32改为tf.float64</p>
 
-<p><img src="\bug1.png" alt="bug1.1"> </p>
+<p><img src="\img\bug1.png" alt="bug1.1"> </p>
 <hr>
-<h2 id="ERROR-2"><a href="#ERROR-2" class="headerlink" title="ERROR 2"></a>ERROR 2</h2><p>bug1修改完以后出现如下问题<br><img src="\bug2.png" alt="bug2"> </p>
+<h2 id="ERROR-2"><a href="#ERROR-2" class="headerlink" title="ERROR 2"></a>ERROR 2</h2><p>bug1修改完以后出现如下问题<br><img src="\img\bug2.png" alt="bug2"> </p>
 <h3 id="思考："><a href="#思考：" class="headerlink" title="思考："></a>思考：</h3><p align="justify">问题应该还是出自数据类型不一致，前半部分图像读取以及配准环节所获得的数据类型估计为float64的，而后半部分SRGAN所处理的数据类型为float32的。</p><br><p align="justify">下面开始尝试修改SRGAN的输入图像数据的类型。</p>
 
 <h3 id="解决方案：-1"><a href="#解决方案：-1" class="headerlink" title="解决方案："></a>解决方案：</h3><p align="justify">将下列代码加上np.float32()，如图所示</p>
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">images_prev_curr = tf.identity(images_prev_curr)</span><br><span class="line">images_next_curr = tf.identity(images_next_curr)</span><br><span class="line">targets = tf.identity(targets)</span><br></pre></td></tr></table></figure>
-<p><img src="\bug2.1.png" alt="bug2.1"> </p>
+<p><img src="\img\bug2.1.png" alt="bug2.1"> </p>
 <hr>
-<h2 id="ERROR-3"><a href="#ERROR-3" class="headerlink" title="ERROR 3"></a>ERROR 3</h2><p><img src="\bug3.png" alt="bug3">  </p>
+<h2 id="ERROR-3"><a href="#ERROR-3" class="headerlink" title="ERROR 3"></a>ERROR 3</h2><p><img src="\img\bug3.png" alt="bug3">  </p>
 <h3 id="思考：-1"><a href="#思考：-1" class="headerlink" title="思考："></a>思考：</h3><p align="justify">content loss的值为“extracted_feature_gen - extracted_feature_target”，而VGG19生成的extracted_feature_gen和extracted_feature_target的每个通道的像素数量不一致，造成无法进行tensor减法。</p>
 
 <h3 id="解决方案：-2"><a href="#解决方案：-2" class="headerlink" title="解决方案："></a>解决方案：</h3><p align="justify">将data数据中的target也进行batch处理</p>
@@ -108,16 +115,16 @@
 <hr>
 <h2 id="ERROR-4"><a href="#ERROR-4" class="headerlink" title="ERROR 4"></a>ERROR 4</h2><p align="justify">如下图所示，训练过程中程序崩溃。</p>
 
-<p><img src="\bug4.png" alt="bug4">  </p>
+<p><img src="\img\bug4.png" alt="bug4">  </p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h3><p align="justify">根据<a href="https://github.com/keras-team/keras/issues/6364" title="HTML5学堂（原创技术文章）" target="_blank" rel="noopener">网上找到的链接</a>，可以知道是tensorflow的summary不接受tensor第四维超过4引起的。于是简单起见，将summary停用了。</p>
 
-<p><img src="\bug4.1.png" alt="bug4.1"> </p>
+<p><img src="\img\bug4.1.png" alt="bug4.1"> </p>
 <p align="justify"><font color="red"><u>注：这个必然不是好的解决方法，留待之后再进行详细讨论解决。</u></font></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/21/课题日志/日志2018-8-20/日志2018-8-20/" data-id="cjl3a1v300003hw5szc5v2ujj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/20/课题日志/日志2018-8-20/日志2018-8-20/" data-id="cjl3anl5b0003qs5sfewo3eve" class="article-share-link">Share</a>
       
       
     </footer>
@@ -154,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/25/VESPCN记录/" data-id="cjl3a1v1d0000hw5szm7vk3v5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/25/VESPCN记录/" data-id="cjl3anl4u0002qs5szpuoic6w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -193,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/20/第一篇博客/" data-id="cjl3a1v1j0001hw5skq79aqqq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/20/第一篇博客/" data-id="cjl3anl400000qs5sbx8xhlmj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +245,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/20/hello-world/" data-id="cjl3a1v280002hw5skeb0lxur" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/20/hello-world/" data-id="cjl3anl460001qs5srrmze5jf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -279,7 +286,7 @@
       <ul>
         
           <li>
-            <a href="/2018/08/21/课题日志/日志2018-8-20/日志2018-8-20/">(no title)</a>
+            <a href="/2018/08/20/课题日志/日志2018-8-20/日志2018-8-20/">课题日志</a>
           </li>
         
           <li>
